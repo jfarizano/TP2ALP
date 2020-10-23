@@ -58,16 +58,9 @@ quote v = quote' v 0
 
 quote' :: Value -> Int -> Term
 quote' (VNeutral (NFree (Global n))) _ = Free (Global n)
-quote' (VNeutral (NFree (Quote k))) i = Bound (i - k)
+quote' (VNeutral (NFree (Quote k))) i = Bound (i - k - 1)
 quote' (VNeutral (NApp n v)) i = (quote' (VNeutral n) i) :@: (quote' v i)
-quote' (VLam f) i = (Lam q)
-                     where q = case f (VNeutral (NFree (Quote i))) of
-                                VLam f' -> quote' (VLam f') (i + 1)
-                                VNeutral (NFree (Quote k)) -> Bound (i - k)
-                                VNeutral (NFree (Global n)) -> Free (Global n)
-                                VNeutral (NApp n v) -> (quote' (VNeutral n) i) :@: (quote' v i)
-
-
-
-
-
+quote' (VLam f) i = let
+                      v' = f (VNeutral (NFree (Quote i)))
+                      q = quote' v' (i + 1)
+                    in (Lam q)
