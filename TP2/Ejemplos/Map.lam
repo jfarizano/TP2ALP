@@ -1,0 +1,13 @@
+def map = Y (\f g xs. (isnil xs) nil  (cons (g (head xs)) (f g (tail xs))))
+
+def mapN = Y (\f g xs. (isnil xs) nil (cons (head xs) (f g (map g (tail xs)))))
+
+-- Idea en Haskell:
+
+-- map :: (a -> a) -> [a] -> [a]
+-- map f [] = []
+-- map f (x:xs) = f x : map f xs
+
+-- mapN :: (a -> a) -> [a] -> [a]
+-- mapN _ [] = []
+-- mapN f (x:xs) = x : mapN f (map f xs)
