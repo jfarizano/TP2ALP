@@ -22,7 +22,7 @@ conversion' (App lt1 lt2) xs = let
                                   t1 = conversion' lt1 xs
                                   t2 = conversion' lt2 xs
                                 in (t1 :@: t2)
-conversion' (Abs s lt) xs = Lam (conversion' lt (s:xs))                           
+conversion' (Abs s lt) xs = Lam (conversion' lt (s:xs))
 
 -------------------------------
 -- Sección 3
@@ -37,7 +37,9 @@ eval e t = eval' t (e, [])
 
 eval' :: Term -> (NameEnv Value, [Value]) -> Value
 eval' (Bound ii) (_, lEnv) = lEnv !! ii
-eval' (Free n) (gEnv, _) = v where Just v = lookup n gEnv
+eval' (Free n) (gEnv, _) = case lookup n gEnv of
+                            Just v -> v
+                            Nothing -> (VNeutral (NFree n))
 -- E-App 1 y E-App2
 eval' (t1 :@: t2) envs = let
                             v1 = eval' t1 envs
